@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Annoying Theme — annoyingtheme.com</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Ccircle cx='14' cy='14' r='7' fill='none' stroke='%23fff' stroke-width='2.5'/%3E%3Cpath d='M21 21l5 5' stroke='%23fff' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+  :root {
+    --bg: #000; --card: #111; --border: #262626;
+    --text: #fff; --muted: #8a8a8a;
+    --accent: #fff;
+  }
+  body {
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; display: flex; flex-direction: column;
+    transition: background .2s, color .2s;
+  }
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 32px; border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--text); display: grid; place-items: center;
+  }
+  .logo svg { width: 20px; height: 20px; stroke: var(--bg); }
+  .brand-name { font-weight: 800; font-size: 16px; }
+  .back {
+    color: var(--muted); text-decoration: none; font-size: 14px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .back:hover { color: var(--text); }
+  .back svg { width: 16px; height: 16px; }
+
+  main { flex: 1; max-width: 900px; margin: 0 auto; padding: 50px 24px; width: 100%; }
+  h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+  .sub { color: var(--muted); margin-bottom: 40px; font-size: 15px; }
+  h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin: 32px 0 16px; font-weight: 600; }
+
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .theme-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px;
+    cursor: pointer; transition: all .15s;
+    text-align: left;
+  }
+  .theme-card:hover { transform: translateY(-3px); }
+  .theme-card.active { border-color: var(--text); }
+  .theme-card.active::after {
+    content: '✓'; position: absolute; top: 12px; right: 14px;
+    font-weight: 900;
+  }
+  .theme-card { position: relative; }
+
+  .swatches {
+    display: flex; gap: 6px; margin-bottom: 14px;
+  }
+  .swatch {
+    width: 32px; height: 32px; border-radius: 8px;
+    border: 1px solid rgba(128,128,128,.3);
+  }
+  .theme-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .theme-desc { color: var(--muted); font-size: 12px; }
+
+  .preview {
+    margin-top: 40px; padding: 24px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+  .preview h3 { font-size: 18px; margin-bottom: 8px; }
+  .preview p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .preview-btn {
+    margin-top: 16px; background: var(--text); color: var(--bg);
+    border: none; padding: 10px 20px; border-radius: 8px;
+    font-weight: 700; cursor: pointer; font-size: 13px;
+  }
+
+  .reset {
+    margin-top: 32px; display: flex; justify-content: center;
+  }
+  .reset button {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text); padding: 12px 24px; border-radius: 999px;
+    cursor: pointer; font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    transition: border-color .2s;
+  }
+  .reset button:hover { border-color: var(--text); }
+  .reset svg { width: 16px; height: 16px; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 16px 32px; text-align: center;
+    color: var(--muted); font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="M21 21l-4.35-4.35"></path>
+      </svg>
+    </div>
+    <span class="brand-name">Annoying Theme</span>
+  </div>
+  <a href="../index.html" class="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5M12 19l-7-7 7-7"></path>
+    </svg>
+    Annoying Search
+  </a>
+</header>
+
+<main>
+  <h1>Temas</h1>
+  <p class="sub">Personalize o Annoying Search. O padrão é <strong>black & white</strong>.</p>
+
+  <h2>Tema do site</h2>
+  <div class="theme-grid" id="themeGrid"></div>
+
+  <div class="preview">
+    <h3>Pré-visualização</h3>
+    <p>Este card muda conforme o tema escolhido. O padrão do Annoying Search é <strong>preto e branco</strong> — sem distração, sem cor.</p>
+    <button class="preview-btn">Botão de exemplo</button>
+  </div>
+
+  <div class="reset">
+    <button id="resetBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path>
+        <path d="M3 3v5h5"></path>
+      </svg>
+      Restaurar padrão (black & white)
+    </button>
+  </div>
+</main>
+
+<footer>
+  © <span id="ano"></span> annoyingtheme.com — parte do Annoying Search
+</footer>
+
+<script>
+  document.getElementById('ano').textContent = new Date().getFullYear();
+
+  const TEMAS = {
+    'bw': {
+      nome: 'Black & White',
+      desc: 'Padrão do Annoying Search',
+      bg: '#000', card: '#111', border: '#262626',
+      text: '#fff', muted: '#8a8a8a'
+    },
+    'light': {
+      nome: 'White & Black',
+      desc: 'Inverso claro',
+      bg: '#fff', card: '#f5f5f5', border: '#e5e5e5',
+      text: '#000', muted: '#6b6b6b'
+    },
+    'sepia': {
+      nome: 'Sepia',
+      desc: 'Leitura confortável',
+      bg: '#1a1510', card: '#241d15', border: '#3a2f22',
+      text: '#f0e6d2', muted: '#a89880'
+    },
+    'ocean': {
+      nome: 'Ocean',
+      desc: 'Azul profundo',
+      bg: '#0a1929', card: '#0f2438', border: '#1e3a52',
+      text: '#e0f0ff', muted: '#7aa3c4'
+    },
+    'forest': {
+      nome: 'Forest',
+      desc: 'Verde escuro',
+      bg: '#0d1a12', card: '#142418', border: '#1f3526',
+      text: '#e0f0e4', muted: '#7fa38a'
+    },
+    'crimson': {
+      nome: 'Crimson',
+      desc: 'Vermelho intenso',
+      bg: '#1a0a0a', card: '#261212', border: '#3a1f1f',
+      text: '#ffe0e0', muted: '#c47a7a'
+    }
+  };
+
+  const grid = document.getElementById('themeGrid');
+  const saved = localStorage.getItem('annoying-theme') || 'bw';
+
+  function aplicarTema(id) {
+    const t = TEMAS[id];
+    if (!t) return;
+    const r = document.documentElement.style;
+    r.setProperty('--bg', t.bg);
+    r.setProperty('--card', t.card);
+    r.setProperty('--border', t.border);
+    r.setProperty('--text', t.text);
+    r.setProperty('--muted', t.muted);
+    localStorage.setItem('annoying-theme', id);
+    document.querySelectorAll('.theme-card').forEach(c => {
+      c.classList.toggle('active', c.dataset.id === id);
+    });
+  }
+
+  Object.entries(TEMAS).forEach(([id, t]) => {
+    const card = document.createElement('div');
+    card.className = 'theme-card';
+    card.dataset.id = id;
+    card.innerHTML = `
+      <div class="swatches">
+        <div class="swatch" style="background:${t.bg}"></div>
+        <div class="swatch" style="background:${t.card}"></div>
+        <div class="swatch" style="background:${t.text}"></div>
+        <div class="swatch" style="background:${t.border}"></div>
+      </div>
+      <div class="theme-name">${t.nome}</div>
+      <div class="theme-desc">${t.desc}</div>
+    `;
+    card.addEventListener('click', () => aplicarTema(id));
+    grid.appendChild(card);
+  });
+
+  aplicarTema(saved);
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    localStorage.removeItem('annoying-theme');
+    aplicarTema('bw');
+  });
+</script>
+
+</body>
+</html>
