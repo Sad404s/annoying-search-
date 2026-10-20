@@ -1,1 +1,189 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IP Detector — ipdetector.uk</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Ccircle cx='14' cy='14' r='7' fill='none' stroke='%23fff' stroke-width='2.5'/%3E%3Cpath d='M21 21l5 5' stroke='%23fff' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+  :root {
+    --bg: #000; --card: #111; --border: #262626;
+    --text: #fff; --muted: #8a8a8a;
+  }
+  [data-theme="light"] {
+    --bg: #fff; --card: #f5f5f5; --border: #e5e5e5;
+    --text: #000; --muted: #6b6b6b;
+  }
+  body {
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; display: flex; flex-direction: column;
+    transition: background .2s, color .2s;
+  }
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 32px; border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--text); display: grid; place-items: center;
+  }
+  .logo svg { width: 20px; height: 20px; stroke: var(--bg); }
+  .brand-name { font-weight: 800; font-size: 16px; }
+  .back {
+    color: var(--muted); text-decoration: none; font-size: 14px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .back:hover { color: var(--text); }
+  .back svg { width: 16px; height: 16px; }
+
+  main {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px 24px; text-align: center;
+  }
+  h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+  .sub { color: var(--muted); font-size: 14px; margin-bottom: 40px; }
+
+  .ip-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 40px 60px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    max-width: 500px; width: 100%;
+  }
+  .ip-label {
+    font-size: 12px; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--muted); font-weight: 600;
+  }
+  .ip-value {
+    font-size: clamp(28px, 6vw, 44px);
+    font-weight: 800; letter-spacing: -1px;
+    font-family: "SF Mono", Consolas, monospace;
+    word-break: break-all;
+  }
+  .ip-loading { color: var(--muted); font-size: 16px; }
+  .copy-btn {
+    margin-top: 8px; background: transparent;
+    border: 1px solid var(--border); color: var(--text);
+    padding: 10px 20px; border-radius: 999px;
+    cursor: pointer; font-size: 13px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: border-color .2s;
+  }
+  .copy-btn:hover { border-color: var(--text); }
+  .copy-btn svg { width: 14px; height: 14px; }
+
+  .info {
+    margin-top: 32px; max-width: 500px;
+    color: var(--muted); font-size: 13px; line-height: 1.6;
+  }
+  .info svg {
+    width: 14px; height: 14px; vertical-align: middle;
+    margin-right: 6px; color: var(--text);
+  }
+  .privacy {
+    margin-top: 20px; padding: 14px 20px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; font-size: 13px;
+    display: flex; align-items: flex-start; gap: 10px;
+    text-align: left; max-width: 500px;
+  }
+  .privacy svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 16px 32px; text-align: center;
+    color: var(--muted); font-size: 12px;
+  }
+
+  @media (max-width: 500px) {
+    .ip-card { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="M21 21l-4.35-4.35"></path>
+      </svg>
+    </div>
+    <span class="brand-name">IP Detector</span>
+  </div>
+  <a href="../index.html" class="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5M12 19l-7-7 7-7"></path>
+    </svg>
+    Annoying Search
+  </a>
+</header>
+
+<main>
+  <h1>Seu IP público</h1>
+  <p class="sub">Detectado em tempo real — nada é armazenado.</p>
+
+  <div class="ip-card">
+    <span class="ip-label">Endereço IP</span>
+    <div class="ip-value" id="ip">Carregando...</div>
+    <button class="copy-btn" id="copyBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      Copiar IP
+    </button>
+  </div>
+
+  <div class="privacy">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+    </svg>
+    <div>
+      <strong>Privacidade:</strong> este site <strong>não armazena</strong> seu IP,
+      não usa cookies e não registra logs. A consulta é feita direto do seu
+      navegador para a API pública <code>api.ipify.org</code> e exibida na tela —
+      nada passa por nossos servidores.
+    </div>
+  </div>
+
+  <p class="info">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M12 16v-4M12 8h.01"></path>
+    </svg>
+    O IP é a identificação pública da sua conexão com a internet.
+  </p>
+</main>
+
+<footer>
+  © <span id="ano"></span> ipdetector.uk — parte do Annoying Search
+</footer>
+
+<script>
+  document.getElementById('ano').textContent = new Date().getFullYear();
+
+  const ipEl = document.getElementById('ip');
+  fetch('https://api.ipify.org?format=json')
+    .then(r => r.json())
+    .then(d => { ipEl.textContent = d.ip; })
+    .catch(() => { ipEl.textContent = 'Não foi possível detectar'; ipEl.style.fontSize = '20px'; });
+
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    const ip = ipEl.textContent;
+    if (!ip || ip === 'Carregando...' || ip === 'Não foi possível detectar') return;
+    navigator.clipboard.writeText(ip).then(() => {
+      const btn = document.getElementById('copyBtn');
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Copiado!';
+      setTimeout(() => { btn.innerHTML = orig; }, 1500);
+    });
+  });
+</script>
+
+</body>
+</html>
