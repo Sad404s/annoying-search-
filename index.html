@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Annoying Search</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Ccircle cx='14' cy='14' r='7' fill='none' stroke='%23fff' stroke-width='2.5'/%3E%3Cpath d='M21 21l5 5' stroke='%23fff' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  :root {
+    --bg: #000000;
+    --bg-soft: #0a0a0a;
+    --card: #111111;
+    --border: #262626;
+    --text: #ffffff;
+    --muted: #8a8a8a;
+    --accent: #ffffff;
+    --accent-inv: #000000;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff;
+    --bg-soft: #f5f5f5;
+    --card: #ffffff;
+    --border: #e5e5e5;
+    --text: #000000;
+    --muted: #6b6b6b;
+    --accent: #000000;
+    --accent-inv: #ffffff;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background .2s, color .2s;
+  }
+
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--accent);
+    display: grid; place-items: center;
+  }
+  .logo svg { width: 22px; height: 22px; stroke: var(--accent-inv); }
+  .brand-name { font-weight: 800; font-size: 18px; letter-spacing: -.3px; }
+  .topnav { display: flex; align-items: center; gap: 20px; }
+  .topnav a {
+    color: var(--muted); text-decoration: none;
+    font-size: 14px; transition: color .2s;
+  }
+  .topnav a:hover { color: var(--text); }
+  .theme-toggle {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; width: 36px; height: 36px;
+    display: grid; place-items: center; cursor: pointer;
+    color: var(--text);
+  }
+  .theme-toggle svg { width: 18px; height: 18px; }
+
+  /* ATALHOS */
+  .atalhos { max-width: 960px; margin: 0 auto; padding: 40px 24px 10px; }
+  .atalhos h2 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--muted); margin-bottom: 16px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .atalhos h2 svg { width: 16px; height: 16px; }
+  .atalho-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  .atalho {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 10px 16px; border-radius: 999px;
+    text-decoration: none; color: var(--text);
+    font-size: 14px; font-weight: 500;
+    transition: all .15s;
+  }
+  .atalho:hover { border-color: var(--text); transform: translateY(-2px); }
+  .atalho svg { width: 16px; height: 16px; }
+
+  /* HERO */
+  .hero { max-width: 860px; margin: 0 auto; padding: 50px 24px 40px; text-align: center; }
+  .hero h1 { font-size: clamp(28px, 5vw, 46px); font-weight: 800; line-height: 1.1; }
+  .hero h1 span { color: var(--muted); }
+  .tagline { margin-top: 12px; color: var(--muted); font-size: 15px; }
+
+  .search-form { margin-top: 32px; }
+  .search-bar {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 999px; padding: 8px 8px 8px 22px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .search-bar:focus-within { border-color: var(--text); box-shadow: 0 0 0 4px rgba(128,128,128,.15); }
+  .lens { width: 20px; height: 20px; color: var(--muted); flex-shrink: 0; }
+  .search-bar input {
+    flex: 1; background: none; border: none; outline: none;
+    color: var(--text); font-size: 16px; padding: 10px 0;
+  }
+  .search-bar input::placeholder { color: var(--muted); }
+  .go {
+    background: var(--accent); color: var(--accent-inv);
+    border: none; border-radius: 999px;
+    padding: 12px 22px; font-weight: 700; font-size: 14px;
+    cursor: pointer; transition: transform .15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .go:hover { transform: scale(1.03); }
+  .go svg { width: 16px; height: 16px; }
+
+  .engines {
+    margin-top: 18px; display: flex; flex-wrap: wrap;
+    justify-content: center; gap: 10px;
+    font-size: 13px; color: var(--muted);
+  }
+  .engines label {
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 8px; border: 1px solid transparent;
+    transition: all .2s;
+  }
+  .engines label:has(input:checked) { border-color: var(--text); background: var(--card); color: var(--text); }
+  .engines input { display: none; }
+
+  /* SEÇÕES */
+  section.block { max-width: 1000px; margin: 20px auto; padding: 0 24px; }
+  section.block h2 {
+    font-size: 22px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  section.block h2 svg { width: 20px; height: 20px; color: var(--muted); }
+  section.block p { color: var(--muted); line-height: 1.65; font-size: 15px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px;
+    display: flex; flex-direction: column; gap: 10px;
+    text-decoration: none; color: var(--text);
+    transition: transform .15s, border-color .15s;
+  }
+  .card:hover { transform: translateY(-4px); border-color: var(--text); }
+  .card strong { font-size: 14px; }
+  .card small { color: var(--muted); font-size: 12px; font-family: monospace; }
+  .badge {
+    width: 46px; height: 46px; border-radius: 12px;
+    background: var(--bg-soft); border: 1px solid var(--border);
+    display: grid; place-items: center;
+  }
+  .badge svg { width: 24px; height: 24px; color: var(--text); }
+
+  footer {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex; justify-content: space-between;
+    color: var(--muted); font-size: 13px;
+  }
+
+  @media (max-width: 600px) {
+    footer { flex-direction: column; gap: 6px; text-align: center; }
+    .topnav a { display: none; }
+    .go span { display: none; }
+    .go { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="M21 21l-4.35-4.35"></path>
+      </svg>
+    </div>
+    <span class="brand-name">Annoying Search</span>
+  </div>
+  <nav class="topnav">
+    <a href="#atalhos">Atalhos</a>
+    <a href="#sites">Sites</a>
+    <a href="#virtuais">Domínios</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+      </svg>
+    </button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ATALHOS NO INÍCIO -->
+  <section class="atalhos" id="atalhos">
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path>
+      </svg>
+      Atalhos rápidos
+    </h2>
+    <div class="atalho-grid">
+      <a class="atalho" href="sites/github.html">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.26-1.28-5.26-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.19.92-.26 1.91-.39 2.89-.39.98 0 1.97.13 2.89.39 2.21-1.5 3.18-1.19 3.18-1.19.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"></path>
+        </svg>
+        github.com
+      </a>
+      <a class="atalho" href="sites/ipdetector.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+        ipdetector.uk
+      </a>
+      <a class="atalho" href="sites/annoyingtheme.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="13.5" cy="6.5" r="2.5"></circle>
+          <circle cx="17.5" cy="10.5" r="2.5"></circle>
+          <circle cx="8.5" cy="7.5" r="2.5"></circle>
+          <circle cx="6.5" cy="12.5" r="2.5"></circle>
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.24-.26-.39-.61-.39-1.01 0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-4.96-4.48-9-10-9z"></path>
+        </svg>
+        annoyingtheme.com
+      </a>
+    </div>
+  </section>
+
+  <!-- BUSCA -->
+  <section class="hero">
+    <h1>Pesquise <span>tudo</span>.</h1>
+    <p class="tagline">O buscador direto — sem anúncios, sem rastreio, sem frescura.</p>
+
+    <form class="search-form" id="searchForm" action="https://duckduckgo.com/" method="GET" target="_blank">
+      <div class="search-bar">
+        <svg class="lens" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="M21 21l-4.35-4.35"></path>
+        </svg>
+        <input type="text" name="q" id="q" placeholder="Digite sua pesquisa..." autocomplete="off" autofocus>
+        <button type="submit" class="go">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6"></path>
+          </svg>
+          <span>Pesquisar</span>
+        </button>
+      </div>
+
+      <div class="engines">
+        <label><input type="radio" name="engine" value="https://duckduckgo.com/" checked> DuckDuckGo</label>
+        <label><input type="radio" name="engine" value="https://www.google.com/search"> Google</label>
+        <label><input type="radio" name="engine" value="https://www.bing.com/search"> Bing</label>
+        <label><input type="radio" name="engine" value="https://search.brave.com/search"> Brave</label>
+      </div>
+    </form>
+  </section>
+
+  <!-- SITES DISPONÍVEIS -->
+  <section class="block" id="sites">
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+      </svg>
+      Sites disponíveis
+    </h2>
+    <div class="grid">
+
+      <a class="card" href="sites/github.html">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.26-1.28-5.26-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.19.92-.26 1.91-.39 2.89-.39.98 0 1.97.13 2.89.39 2.21-1.5 3.18-1.19 3.18-1.19.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"></path>
+          </svg>
+        </div>
+        <strong>GitHub</strong>
+        <small>github.com → real</small>
+      </a>
+
+      <a class="card" href="sites/ipdetector.html">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="8" rx="2"></rect>
+            <rect x="2" y="14" width="20" height="8" rx="2"></rect>
+            <path d="M6 6h.01M6 18h.01"></path>
+          </svg>
+        </div>
+        <strong>IP Detector</strong>
+        <small>ipdetector.uk → seu IP</small>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- SITES COM DOMÍNIOS VIRTUAIS OU NOSSOS -->
+  <section class="block" id="virtuais">
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2 2 7l10 5 10-5-10-5z"></path>
+        <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+      </svg>
+      Sites com domínios virtuais ou nossos
+    </h2>
+    <div class="grid">
+
+      <a class="card" href="sites/annoyingtheme.html">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="13.5" cy="6.5" r="2.5"></circle>
+            <circle cx="17.5" cy="10.5" r="2.5"></circle>
+            <circle cx="8.5" cy="7.5" r="2.5"></circle>
+            <circle cx="6.5" cy="12.5" r="2.5"></circle>
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.24-.26-.39-.61-.39-1.01 0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-4.96-4.48-9-10-9z"></path>
+          </svg>
+        </div>
+        <strong>Annoying Theme</strong>
+        <small>annoyingtheme.com</small>
+      </a>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span>© <span id="ano"></span> Annoying Search</span>
+  <span>Feito sem enrolação.</span>
+</footer>
+
+<script>
+  document.getElementById('ano').textContent = new Date().getFullYear();
+
+  // Motor de busca dinâmico
+  const form = document.getElementById('searchForm');
+  form.addEventListener('submit', () => {
+    form.action = form.querySelector('input[name="engine"]:checked').value;
+  });
+
+  // Scroll suave
+  document.querySelectorAll('.topnav a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Digitar domínio real abre direto
+  const q = document.getElementById('q');
+  q.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const v = q.value.trim();
+      if (/^[a-z0-9-]+\.[a-z]{2,}$/i.test(v)) {
+        e.preventDefault();
+        window.open('https://' + v, '_blank', 'noopener');
+      }
+    }
+  });
+
+  // Toggle de tema (persistido)
+  const toggle = document.getElementById('themeToggle');
+  const icon = document.getElementById('themeIcon');
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  updateIcon(saved);
+
+  toggle.addEventListener('click', () => {
+    const atual = document.documentElement.getAttribute('data-theme');
+    const novo = atual === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', novo);
+    localStorage.setItem('theme', novo);
+    updateIcon(novo);
+  });
+
+  function updateIcon(theme) {
+    if (theme === 'dark') {
+      icon.innerHTML = '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>';
+    } else {
+      icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+    }
+  }
+</script>
+
+</body>
+                                  </html>
